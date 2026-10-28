@@ -1,5 +1,215 @@
+/* ==========================================================
+   AppComponent — catálogo
+   :host es el propio <app-root>. Lo convertimos en una rejilla
+   para no tener que tocar el HTML.
+   ========================================================== */
+
+:host {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.75rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  /* Mucho espacio abajo para que la última fila pueda llegar
+     al centro de la pantalla y destacarse */
+  padding: 3.5rem 1.5rem 45vh;
+}
+
+/* ---------- Cabecera ---------- */
+
+h1 {
+  grid-column: 1 / -1;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+h2 {
+  grid-column: 1 / -1;
+  margin: -0.75rem 0 1.5rem;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 300;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+h2::after {
+  content: "";
+  display: block;
+  width: 90px;
+  height: 1px;
+  margin: 1.25rem auto 0;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+/* ---------- Tarjetas ---------- */
+
+article {
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem;
+  background: linear-gradient(180deg, var(--surface-2), var(--surface));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: translate 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Usamos "translate" (no "transform") para no pisar el "scale"
+   que controla la animación de scroll */
+article:hover {
+  translate: 0 -6px;
+  border-color: var(--gold-dark);
+  box-shadow:
+    0 20px 40px -14px rgba(0, 0, 0, 0.85),
+    0 0 24px -8px rgba(201, 162, 74, 0.25);
+}
+
+/* Las fotos de la API tienen fondo blanco: les damos un marco
+   claro intencionado para que no parezcan "pegadas" al fondo oscuro */
 img {
-  width: 100px;
-  height: 120px;
+  width: 100%;
+  height: 220px;
   object-fit: contain;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  background: #fff;
+  border-radius: calc(var(--radius) - 6px);
+}
+
+article h3 {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--text);
+  /* Títulos largos: máximo 2 líneas con "..." */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+article p {
+  margin: 0;
+}
+
+/* Categoría (primer <p>) */
+article p:first-of-type {
+  margin-bottom: 1rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Precio (último <p>): margin-top auto lo empuja al fondo,
+   así todos los precios quedan alineados aunque los títulos varíen */
+article p:last-of-type {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+/* ---------- Efecto "fila actual" al hacer scroll ----------
+   animation-timeline: view() hace que la animación no avance con
+   el tiempo, sino según la posición de la tarjeta en la pantalla:
+     0%   → la tarjeta asoma por abajo
+     50%  → está en el centro de la pantalla
+     100% → sale por arriba
+   Como las tarjetas de una misma fila están a la misma altura,
+   avanzan a la vez: se destaca la fila entera.
+   @supports: si el navegador no lo soporta, se ve el catálogo normal. */
+
+@supports (animation-timeline: view()) {
+  article {
+    animation: row-focus linear both;
+    animation-timeline: view();
+    animation-range: cover 0% cover 100%;
+  }
+}
+
+@keyframes row-focus {
+  0% {
+    opacity: 0.25;
+    scale: 0.9;
+    filter: blur(4px) grayscale(0.6);
+  }
+
+  38%,
+  62% {
+    opacity: 1;
+    scale: 1.05;
+    filter: blur(0) grayscale(0);
+  }
+
+  100% {
+    opacity: 0.25;
+    scale: 0.9;
+    filter: blur(4px) grayscale(0.6);
+  }
+}
+
+/* ---------- Mensaje "Cargando..." (bloque @empty) ---------- */
+
+:host > p {
+  grid-column: 1 / -1;
+  margin: 3rem 0;
+  text-align: center;
+  font-size: 0.8rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* ---------- Móvil ---------- */
+
+@media (max-width: 600px) {
+  :host {
+    gap: 1.25rem;
+    padding: 2.5rem 1rem 40vh;
+  }
+
+  h1 {
+    letter-spacing: 0.1em;
+  }
+
+  img {
+    height: 180px;
+  }
+}
+
+/* Respeta a quien tiene desactivadas las animaciones en su sistema */
+@media (prefers-reduced-motion: reduce) {
+  article,
+  :host > p {
+    transition: none;
+    animation: none;
+  }
+
+  article:hover {
+    translate: none;
+  }
 }

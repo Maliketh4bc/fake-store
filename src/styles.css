@@ -1,1 +1,74 @@
-/* You can add global styles to this file, and also import other style files */
+/* ==========================================================
+   Estilos globales — Fake Store (negro y dorado)
+   ========================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;500&display=swap');
+
+:root {
+  /* Fondos */
+  --bg: #0b0b0c;
+  --surface: #141416;
+  --surface-2: #1c1c1f;
+  --border: #2a2a2e;
+
+  /* Dorados */
+  --gold: #c9a24a;
+  --gold-light: #e8cc80;
+  --gold-dark: #8c6d2a;
+
+  /* Texto */
+  --text: #ece8df;
+  --text-muted: #9a958b;
+
+  /* Otros */
+  --radius: 14px;
+  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, #1d180c 0%, transparent 70%),
+    var(--bg);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: var(--font-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--bg);
+}
+
+/* Barra de scroll a juego (Chrome, Edge, Firefox) */
+html {
+  scrollbar-color: var(--gold-dark) var(--bg);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gold-dark);
+  border-radius: 10px;
+  border: 2px solid var(--bg);
+}
